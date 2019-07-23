@@ -3,8 +3,9 @@ Gem::Specification.new do |s|
   s.version = "0.1.1"
   s.authors = ["Yoann Lecuyer"]
   s.date = '2019-07-14'
-  s.summary = 'Display puma status of running puma server'
+  s.summary = 'Command-line too for puma to display information about running request/process'
   s.license = "MIT"
+  s.homepage = 'https://github.com/ylecuyer/puma-status'
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(LICENSE)
   s.require_paths = ["lib"]
