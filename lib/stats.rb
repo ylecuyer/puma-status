@@ -43,6 +43,7 @@ class Stats
     end
 
     def uptime
+      return 0 unless @wstats.key?('started_at')
       (Time.now - Time.parse(@wstats['started_at'])).to_i
     end
 
@@ -82,6 +83,7 @@ class Stats
   end
 
   def uptime
+    return 0 unless @stats.key?('started_at')
     (Time.now - Time.parse(@stats['started_at'])).to_i
   end
 
