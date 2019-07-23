@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require './lib/puma-status'
+require 'puma-status'
 
 run
