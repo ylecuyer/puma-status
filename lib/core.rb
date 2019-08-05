@@ -18,9 +18,12 @@ def get_stats(state_file_path)
 end
 
 def get_top_stats(pids)
-  top_result = `top -b -n 1 -p #{pids.join(',')} | tail -n #{pids.length}`
-  top_stats = top_result.split("\n").map { |row| r = row.split(' '); [r[0].to_i, r[5].to_i/1024, r[8].to_f] }
-    .reduce({}) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
+  pids.each_slice(19).inject({}) do |res, pids19|
+    top_result = `top -b -n 1 -p #{pids19.join(',')} | tail -n #{pids19.length}`
+    top_result.split("\n").map { |row| r = row.split(' '); [r[0].to_i, r[5].to_i/1024, r[8].to_f] }
+      .inject(res) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
+    res
+  end
 end
 
 def hydrate_stats(stats, puma_state, state_file_path)
