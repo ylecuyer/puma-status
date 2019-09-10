@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version = "0.1.2"
   s.authors = ["Yoann Lecuyer"]
   s.date = '2019-07-14'
-  s.summary = 'Command-line too for puma to display information about running request/process'
+  s.summary = 'Command-line tool for puma to display information about running request/process'
   s.license = "MIT"
   s.homepage = 'https://github.com/ylecuyer/puma-status'
 
