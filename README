@@ -1,6 +1,6 @@
 # puma-status
 
-Command-line too for puma to display information about running request/process
+Command-line tool for puma to display information about running request/process
 
 # Install
 
