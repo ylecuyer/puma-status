@@ -38,6 +38,10 @@ class Stats
       running - pool_capacity
     end
 
+    def phase
+      @wstats['phase']
+    end
+
     def load
       running_threads/total_threads.to_f*100
     end
@@ -101,6 +105,10 @@ class Stats
 
   def pool_capacity
     @stats['pool_capacity'] || 0
+  end
+
+  def phase
+    @stats['phase']
   end
 
   def load

@@ -43,12 +43,17 @@ def hydrate_stats(stats, puma_state, state_file_path)
 end
 
 def display_stats(stats)
-  puts "#{stats.pid} (#{stats.state_file_path}) Uptime: #{seconds_to_human(stats.uptime)} | Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.total_threads))}"
+  master_line = "#{stats.pid} (#{stats.state_file_path}) Uptime: #{seconds_to_human(stats.uptime)} "
+  master_line += "| Phase: #{stats.phase} " if stats.phase
+  master_line += "| Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.total_threads))}"
+
+  puts master_line
 
   stats.workers.each do |wstats|
     worker_line = " └ #{wstats.pid.to_s.rjust(5, ' ')} CPU: #{color(75, 50, wstats.pcpu, wstats.pcpu.to_s.rjust(5, ' '))}% Mem: #{color(1000, 750, wstats.mem, wstats.mem.to_s.rjust(4, ' '))} MB Uptime: #{seconds_to_human(wstats.uptime)} | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.total_threads))}"
     worker_line += " #{("Queue: " + wstats.backlog.to_s).colorize(:red)}" if wstats.backlog > 0
     worker_line += " Last checkin: #{wstats.last_checkin}" if wstats.last_checkin >= 10
+    worker_line += " Phase: #{wstats.phase}" if wstats.phase != stats.phase
 
     puts worker_line
   end
