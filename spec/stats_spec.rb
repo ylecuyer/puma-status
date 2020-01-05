@@ -26,12 +26,20 @@ describe Stats do
      end
 
      context 'workers' do
-       it 'gives running threads' do
+       it 'gives running threads first worker' do
          expect(stats.workers.first.running_threads).to eq(4)
        end
 
-       it 'gives total threads' do
+       it 'gives total threads first worker' do
          expect(stats.workers.first.total_threads).to eq(4)
+       end
+
+       it 'gives running threads last worker' do
+         expect(stats.workers.last.running_threads).to eq(2)
+       end
+
+       it 'gives total threads last worker' do
+         expect(stats.workers.last.total_threads).to eq(4)
        end
      end
   end

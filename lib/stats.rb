@@ -30,12 +30,16 @@ class Stats
     end
     alias :total_threads :running
 
+    def max_threads
+      @wstats.dig('last_status', 'max_threads') || @wstats['max_threads'] || 0
+    end
+
     def pool_capacity
       @wstats.dig('last_status', 'pool_capacity') || @wstats['pool_capacity'] || 0
     end
 
     def running_threads
-      running - pool_capacity
+      max_threads - pool_capacity
     end
 
     def phase
@@ -92,11 +96,11 @@ class Stats
   end
 
   def total_threads
-    workers.reduce(0) { |total, wstats| total + wstats.running }
+    workers.reduce(0) { |total, wstats| total + wstats.max_threads }
   end
 
   def running_threads
-    workers.reduce(0) { |total, wstats| total + (wstats.running - wstats.pool_capacity) }
+    workers.reduce(0) { |total, wstats| total + wstats.running_threads }
   end
 
   def running
