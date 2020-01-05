@@ -103,6 +103,10 @@ class Stats
     workers.reduce(0) { |total, wstats| total + wstats.running_threads }
   end
 
+  def max_threads
+    workers.reduce(0) { |total, wstats| total + wstats.max_threads }
+  end
+
   def running
     @stats['running'] || 0
   end
