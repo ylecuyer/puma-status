@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    puma-status (0.1.4)
+    puma-status (0.1.5)
       colorize (~> 0.8)
       net_http_unix (~> 0.2)
 
