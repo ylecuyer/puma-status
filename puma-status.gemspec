@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.summary = 'Command-line tool for puma to display information about running request/process'
   s.license = "MIT"
   s.homepage = 'https://github.com/ylecuyer/puma-status'
+  s.required_ruby_version = '>=2.3.0'
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(LICENSE)
   s.require_paths = ["lib"]
