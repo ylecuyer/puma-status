@@ -89,12 +89,12 @@ describe 'Core' do
     end
 
     it 'works in single mode' do
-      stats = {"started_at"=>"2019-07-14T10:49:24Z", "backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "pid"=>21725, "state_file_path"=>"../testpuma/tmp/puma.state"}
+      stats = {"started_at"=>"2019-07-14T10:49:24Z", "backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "pid"=>21725, "state_file_path"=>"../testpuma/tmp/puma.state", "pcpu"=>10, "mem"=>64}
       
       ClimateControl.modify NO_COLOR: '1' do
         expect(format_stats(Stats.new(stats))).to eq(
 %Q{21725 (../testpuma/tmp/puma.state) Uptime:  0m 0s | Load: 0[░░░░]4
- └ 21725 CPU:      % Mem:      MB Uptime:  0m 0s | Load: 0[░░░░]4})
+ └ 21725 CPU:    10% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4})
       end
     end
   end

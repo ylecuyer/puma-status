@@ -4,17 +4,28 @@ def debug(str)
   puts str if ENV.key?('DEBUG')
 end
 
-def color(critical, warn, value, str)
-  return str if ENV.key?('NO_COLOR')
+def warn(str)
+  colorize(str, :yellow)
+end
 
-  color = if value >= critical
+def error(str)
+  colorize(str, :red)
+end
+
+def colorize(str, color_name)
+  return str if ENV.key?('NO_COLOR')
+  str.to_s.colorize(color_name)
+end
+
+def color(critical, warn, value, str)
+  color_level = if value >= critical
             :red
           elsif value < critical && value >= warn
             :yellow
           else
             :green
           end
-  str.to_s.colorize(color)
+  colorize(str, color_level)
 end
 
 def asciiThreadLoad(idx, total)

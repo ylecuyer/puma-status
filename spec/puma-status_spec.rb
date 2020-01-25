@@ -38,4 +38,46 @@ describe 'Puma Status' do
       run
     }.to output.to_stdout
   end
+
+  context 'error handling' do
+    before(:each) do
+      ARGV.replace ['./tmp/puma.state']
+    end
+
+    around do |example|
+      ClimateControl.modify NO_COLOR: '1' do
+        example.run
+      end
+    end
+
+    it 'handles ENOENT errors' do
+      allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ENOENT)
+
+      expect {
+        run
+      }.to output(%Q{
+./tmp/puma.state doesn't exists
+}).to_stdout
+    end
+
+    it 'handles EISDIR errors' do
+      allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::EISDIR)
+
+      expect {
+        run
+      }.to output(%Q{
+./tmp/puma.state isn't a state file
+}).to_stdout
+    end
+
+    it 'handles all errors' do
+      allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ECONNREFUSED)
+
+      expect {
+        run
+      }.to output(%Q{
+./tmp/puma.state an unhandled error occured: #<Errno::ECONNREFUSED: Connection refused>
+}).to_stdout
+    end
+  end
 end
