@@ -9,6 +9,14 @@ class Stats
       @wstats['pid']
     end
 
+    def killed=(killed)
+      @wstats['killed'] = killed
+    end
+
+    def killed?
+      @wstats['killed']
+    end
+
     def mem=(mem)
       @wstats['mem'] = mem
     end
@@ -23,6 +31,10 @@ class Stats
 
     def pcpu
       @wstats['pcpu']
+    end
+
+    def booting?
+      @wstats['last_status'] && @wstats['last_status'].empty?
     end
 
     def running
@@ -53,6 +65,10 @@ class Stats
     def uptime
       return 0 unless @wstats.key?('started_at')
       (Time.now - Time.parse(@wstats['started_at'])).to_i
+    end
+
+    def requests_count
+      @wstats.dig('last_status', 'requests_count') || @wstats['requests_count'] || 0
     end
 
     def backlog
@@ -93,6 +109,10 @@ class Stats
   def uptime
     return 0 unless @stats.key?('started_at')
     (Time.now - Time.parse(@stats['started_at'])).to_i
+  end
+
+  def booting?
+    workers.all?(&:booting?)
   end
 
   def total_threads

@@ -36,8 +36,9 @@ def hydrate_stats(stats, puma_state, state_file_path)
 
   stats.tap do |s|
     stats.workers.map do |wstats|
-      wstats.mem = top_stats[wstats.pid][:mem]
-      wstats.pcpu = top_stats[wstats.pid][:pcpu]
+      wstats.mem = top_stats.dig(wstats.pid, :mem) || 0
+      wstats.pcpu = top_stats.dig(wstats.pid, :pcpu) || 0
+      wstats.killed = !top_stats.key?(wstats.pid) || (wstats.mem <=0 && wstats.pcpu <= 0)
     end
   end
 end
@@ -45,13 +46,28 @@ end
 def format_stats(stats)
   master_line = "#{stats.pid} (#{stats.state_file_path}) Uptime: #{seconds_to_human(stats.uptime)} "
   master_line += "| Phase: #{stats.phase} " if stats.phase
-  master_line += "| Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.max_threads))}"
+
+  if stats.booting?
+    master_line += " #{warn("booting")}"
+  else
+    master_line += "| Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.max_threads))}"
+  end
 
   output = [master_line] + stats.workers.map do |wstats|
-    worker_line = " └ #{wstats.pid.to_s.rjust(5, ' ')} CPU: #{color(75, 50, wstats.pcpu, wstats.pcpu.to_s.rjust(5, ' '))}% Mem: #{color(1000, 750, wstats.mem, wstats.mem.to_s.rjust(4, ' '))} MB Uptime: #{seconds_to_human(wstats.uptime)} | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.max_threads))}"
-    worker_line += " #{("Queue: " + wstats.backlog.to_s).colorize(:red)}" if wstats.backlog > 0
-    worker_line += " Last checkin: #{wstats.last_checkin}" if wstats.last_checkin >= 10
-    worker_line += " Phase: #{wstats.phase}" if wstats.phase != stats.phase
+    worker_line = " └ #{wstats.pid.to_s.rjust(5, ' ')} CPU: #{color(75, 50, wstats.pcpu, wstats.pcpu.to_s.rjust(5, ' '))}% Mem: #{color(1000, 750, wstats.mem, wstats.mem.to_s.rjust(4, ' '))} MB Uptime: #{seconds_to_human(wstats.uptime)}"
+
+    if wstats.booting?
+      worker_line += " #{warn("booting")}"
+    elsif wstats.killed?
+      worker_line += " #{error("killed")}"
+    else
+      worker_line += " | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.max_threads))}"
+      worker_line += " | Rqs: #{color(10000, 8000, wstats.requests_count)}" if wstats.requests_count
+      worker_line += " Phase: #{error(wstats.phase)}" if wstats.phase != stats.phase
+      worker_line += " Queue: #{error(wstats.backlog.to_s)}" if wstats.backlog > 0
+      worker_line += " Last checkin: #{error(wstats.last_checkin)}" if wstats.last_checkin >= 10
+    end
+
     worker_line
   end
 
