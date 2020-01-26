@@ -62,7 +62,7 @@ def format_stats(stats)
       worker_line += " #{error("killed")}"
     else
       worker_line += " | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.max_threads))}"
-      worker_line += " | Rqs: #{color(10000, 8000, wstats.requests_count)}" if wstats.requests_count
+      worker_line += " | Req: #{wstats.requests_count}" if wstats.requests_count
       worker_line += " Phase: #{error(wstats.phase)}" if wstats.phase != stats.phase
       worker_line += " Queue: #{error(wstats.backlog.to_s)}" if wstats.backlog > 0
       worker_line += " Last checkin: #{error(wstats.last_checkin)}" if wstats.last_checkin >= 10
