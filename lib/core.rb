@@ -48,7 +48,7 @@ def format_stats(stats)
   master_line += "| Phase: #{stats.phase} " if stats.phase
 
   if stats.booting?
-    master_line += " #{warn("booting")}"
+    master_line += warn("booting")
   else
     master_line += "| Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.max_threads))}"
   end

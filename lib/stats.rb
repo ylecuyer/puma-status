@@ -14,7 +14,7 @@ class Stats
     end
 
     def killed?
-      @wstats['killed']
+      !!@wstats['killed']
     end
 
     def mem=(mem)
@@ -34,7 +34,7 @@ class Stats
     end
 
     def booting?
-      @wstats['last_status'] && @wstats['last_status'].empty?
+      @wstats.key?('last_status') && @wstats['last_status'].empty?
     end
 
     def running
@@ -87,7 +87,7 @@ class Stats
   end
 
   def workers
-    (@stats['worker_status'] || [@stats]).map { |wstats| Worker.new(wstats) }
+    @workers ||= (@stats['worker_status'] || [@stats]).map { |wstats| Worker.new(wstats) }
   end
 
   def pid=(pid)
