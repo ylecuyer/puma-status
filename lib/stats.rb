@@ -9,6 +9,14 @@ class Stats
       @wstats['pid']
     end
 
+    def killed=(killed)
+      @wstats['killed'] = killed
+    end
+
+    def killed?
+      !!@wstats['killed']
+    end
+
     def mem=(mem)
       @wstats['mem'] = mem
     end
@@ -23,6 +31,10 @@ class Stats
 
     def pcpu
       @wstats['pcpu']
+    end
+
+    def booting?
+      @wstats.key?('last_status') && @wstats['last_status'].empty?
     end
 
     def running
@@ -71,7 +83,7 @@ class Stats
   end
 
   def workers
-    (@stats['worker_status'] || [@stats]).map { |wstats| Worker.new(wstats) }
+    @workers ||= (@stats['worker_status'] || [@stats]).map { |wstats| Worker.new(wstats) }
   end
 
   def pid=(pid)
@@ -93,6 +105,10 @@ class Stats
   def uptime
     return 0 unless @stats.key?('started_at')
     (Time.now - Time.parse(@stats['started_at'])).to_i
+  end
+
+  def booting?
+    workers.all?(&:booting?)
   end
 
   def total_threads

@@ -17,7 +17,8 @@ def colorize(str, color_name)
   str.to_s.colorize(color_name)
 end
 
-def color(critical, warn, value, str)
+def color(critical, warn, value, str = nil)
+  str = value unless str
   color_level = if value >= critical
             :red
           elsif value < critical && value >= warn

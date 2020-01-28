@@ -15,7 +15,7 @@ describe Stats do
 
      it 'gives workers' do
        expect(stats.workers.count).to eq(4)
-     end 
+     end
 
      it 'gives running threads' do
        expect(stats.running_threads).to eq(13)
@@ -23,6 +23,15 @@ describe Stats do
 
      it 'gives total threads' do
        expect(stats.total_threads).to eq(16)
+     end
+
+     it 'master is not marked as booting' do
+       expect(stats.booting?).to eq(false)
+     end
+
+     it 'master process is marked as booting' do
+       stats = Stats.new({"workers"=>4, "phase"=>0, "booted_workers"=>4, "old_workers"=>0, "worker_status"=>[{"pid"=>28909, "index"=>0, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{}}, {"pid"=>28911, "index"=>1, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{}}]})
+       expect(stats.booting?).to eq(true)
      end
 
      context 'workers' do
@@ -41,6 +50,19 @@ describe Stats do
        it 'gives total threads last worker' do
          expect(stats.workers.last.total_threads).to eq(4)
        end
+
+       it 'can mark worker as killed' do
+         worker = stats.workers.first
+         expect {
+           worker.killed = true
+         }.to change(worker, :killed?).from(false).to(true)
+       end
+
+       it 'worker is marked as booting' do
+         stats = Stats.new({"workers"=>4, "phase"=>0, "booted_workers"=>4, "old_workers"=>0, "worker_status"=>[{"pid"=>28909, "index"=>0, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{}}, {"pid"=>28911, "index"=>1, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>0, "max_threads"=>4}}]})
+         worker = stats.workers.first
+         expect(worker.booting?).to eq(true)
+       end
      end
   end
 
@@ -54,7 +76,7 @@ describe Stats do
 
      it 'gives workers' do
        expect(stats.workers.count).to eq(1)
-     end 
+     end
 
      it 'gives running threads' do
        expect(stats.running_threads).to eq(2)
