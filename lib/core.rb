@@ -1,13 +1,28 @@
 require 'yaml'
 require 'json'
 require 'net_x/http_unix'
+require 'openssl'
 require 'time'
 require_relative 'stats'
 
 def get_stats(state_file_path)
   puma_state = YAML.load_file(state_file_path)
 
-  client = NetX::HTTPUnix.new(puma_state["control_url"])
+  uri = URI.parse(puma_state["control_url"])
+  
+  address = if uri.scheme =~ /unix/i
+              [uri.scheme, '://', uri.host, uri.path].join
+            else
+              [uri.host, uri.path].join
+            end
+
+  client = NetX::HTTPUnix.new(address, uri.port)
+
+  if uri.scheme =~ /ssl/i
+    client.use_ssl = true 
+    client.verify_mode = OpenSSL::SSL::VERIFY_NONE if ENV['SSL_NO_VERIFY'] == '1'
+  end
+
   req = Net::HTTP::Get.new("/stats?token=#{puma_state["control_auth_token"]}")
   resp = client.request(req)
   raw_stats = JSON.parse(resp.body)
