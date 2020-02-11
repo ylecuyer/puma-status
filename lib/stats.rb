@@ -68,7 +68,7 @@ class Stats
     end
 
     def requests_count
-      @wstats.dig('last_status', 'requests_count') || @wstats['requests_count'] || 0
+      @wstats.dig('last_status', 'requests_count') || @wstats['requests_count']
     end
 
     def backlog
@@ -125,6 +125,12 @@ class Stats
 
   def max_threads
     workers.reduce(0) { |total, wstats| total + wstats.max_threads }
+  end
+
+  def requests_count
+    workers_with_requests_count = workers.select(&:requests_count)
+    return unless workers_with_requests_count.any?
+    workers_with_requests_count.reduce(0) { |total, wstats| total + wstats.requests_count }
   end
 
   def running
