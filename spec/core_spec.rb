@@ -81,8 +81,8 @@ describe 'Core' do
       ClimateControl.modify NO_COLOR: '1' do
         expect(format_stats(Stats.new(stats))).to eq(
 %Q{12328 (../testpuma/tmp/puma.state) Uptime:  0m 0s | Phase: 1 | Load: 0[░░░░░░░░░░░░░░░░]16
- └ 12362 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 Phase: 0
- └ 12366 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 Phase: 0
+ └ 12362 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Phase: 0
+ └ 12366 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Phase: 0
  └ 12370 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4
  └ 12372 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4})
       end
