@@ -129,7 +129,7 @@ class Stats
 
   def requests_count
     workers_with_requests_count = workers.select(&:requests_count)
-    return unless workers_with_requests_count.any?
+    return if workers_with_requests_count.none?
     workers_with_requests_count.reduce(0) { |total, wstats| total + wstats.requests_count }
   end
 
