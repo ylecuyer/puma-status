@@ -59,13 +59,14 @@ def hydrate_stats(stats, puma_state, state_file_path)
 end
 
 def format_stats(stats)
-  master_line = "#{stats.pid} (#{stats.state_file_path}) Uptime: #{seconds_to_human(stats.uptime)} "
-  master_line += "| Phase: #{stats.phase} " if stats.phase
+  master_line = "#{stats.pid} (#{stats.state_file_path}) Uptime: #{seconds_to_human(stats.uptime)}"
+  master_line += " | Phase: #{stats.phase}" if stats.phase
 
   if stats.booting?
-    master_line += warn("booting")
+    master_line += " #{warn("booting")}"
   else
-    master_line += "| Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.max_threads))}"
+    master_line += " | Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.max_threads))}"
+    master_line += " | Req: #{stats.requests_count}" if stats.requests_count
   end
 
   output = [master_line] + stats.workers.map do |wstats|
@@ -77,7 +78,8 @@ def format_stats(stats)
       worker_line += " #{error("killed")}"
     else
       worker_line += " | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.max_threads))}"
-      worker_line += " Phase: #{error(wstats.phase)}" if wstats.phase != stats.phase
+      worker_line += " | Phase: #{error(wstats.phase)}" if wstats.phase != stats.phase
+      worker_line += " | Req: #{wstats.requests_count}" if wstats.requests_count
       worker_line += " Queue: #{error(wstats.backlog.to_s)}" if wstats.backlog > 0
       worker_line += " Last checkin: #{error(wstats.last_checkin)}" if wstats.last_checkin >= 10
     end

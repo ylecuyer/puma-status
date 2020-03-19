@@ -34,6 +34,11 @@ describe Stats do
        expect(stats.booting?).to eq(true)
      end
 
+     it 'gives the number of requests' do
+       stats = Stats.new({"workers"=>4, "phase"=>0, "booted_workers"=>4, "old_workers"=>0, "worker_status"=>[{"pid"=>28909, "index"=>0, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{"requests_count" => 150}}, {"pid"=>28911, "index"=>1, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>0, "max_threads"=>4, "requests_count" => 300}}]})
+       expect(stats.requests_count).to eq(450)
+     end
+
      context 'workers' do
        it 'gives running threads first worker' do
          expect(stats.workers.first.running_threads).to eq(4)
@@ -63,11 +68,17 @@ describe Stats do
          worker = stats.workers.first
          expect(worker.booting?).to eq(true)
        end
+
+       it 'gives the number of requests' do
+         stats = Stats.new({"workers"=>4, "phase"=>0, "booted_workers"=>4, "old_workers"=>0, "worker_status"=>[{"pid"=>28909, "index"=>0, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{"requests_count" => 150}}, {"pid"=>28911, "index"=>1, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T14:33:54Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>0, "max_threads"=>4, "requests_count" => 300}}]})
+         worker = stats.workers.first
+         expect(worker.requests_count).to eq(150)
+       end
      end
   end
 
   context 'single stats' do
-    let(:stats) { Stats.new({"started_at"=>"2019-07-14T15:07:15Z", "backlog"=>0, "running"=>4, "pool_capacity"=>2, "max_threads"=>4}) }
+    let(:stats) { Stats.new({"started_at"=>"2019-07-14T15:07:15Z", "backlog"=>0, "running"=>4, "pool_capacity"=>2, "max_threads"=>4, "requests_count"=>150}) }
 
      it 'returns uptime 0 for older version of puma' do
        stats = Stats.new({"backlog"=>0, "running"=>4, "pool_capacity"=>2, "max_threads"=>4})
@@ -86,6 +97,10 @@ describe Stats do
        expect(stats.total_threads).to eq(4)
      end
 
+     it 'gives the number of requests' do
+       expect(stats.requests_count).to eq(150)
+     end
+
      context 'workers' do
        it 'gives running threads' do
          expect(stats.workers.first.running_threads).to eq(2)
@@ -93,6 +108,10 @@ describe Stats do
 
        it 'gives total threads' do
          expect(stats.workers.first.total_threads).to eq(4)
+       end
+
+       it 'gives the number of requests' do
+         expect(stats.workers.first.requests_count).to eq(150)
        end
      end
   end
