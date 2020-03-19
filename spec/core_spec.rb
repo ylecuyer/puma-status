@@ -137,6 +137,19 @@ describe 'Core' do
       end
     end
 
+    it 'show the number of request when present in clustered mode' do
+      stats = {"started_at"=>"2019-07-14T10:49:24Z", "workers"=>4, "phase"=>0, "booted_workers"=>4, "old_workers"=>0, "worker_status"=>[{"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12362, "index"=>0, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "requests_count"=>150}, "mem"=>64, "pcpu"=>0.0}, {"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12366, "index"=>1, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "requests_count"=>223}, "mem"=>64, "pcpu"=>0.0}, {"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12370, "index"=>2, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "requests_count"=>450}, "mem"=>64, "pcpu"=>0.0}, {"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12372, "index"=>3, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "requests_count"=>10}, "mem"=>64, "pcpu"=>0.0}], "pid"=>12328, "state_file_path"=>"../testpuma/tmp/puma.state"}
+      
+      ClimateControl.modify NO_COLOR: '1' do
+        expect(format_stats(Stats.new(stats))).to eq(
+%Q{12328 (../testpuma/tmp/puma.state) Uptime:  0m 0s | Phase: 0 | Load: 0[░░░░░░░░░░░░░░░░]16 | Req: 833
+ └ 12362 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Req: 150
+ └ 12366 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Req: 223
+ └ 12370 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Req: 450
+ └ 12372 CPU:   0.0% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Req: 10})
+      end
+    end
+
     it 'works in single mode' do
       stats = {"started_at"=>"2019-07-14T10:49:24Z", "backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "pid"=>21725, "state_file_path"=>"../testpuma/tmp/puma.state", "pcpu"=>10, "mem"=>64}
       
@@ -146,6 +159,15 @@ describe 'Core' do
  └ 21725 CPU:    10% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4})
       end
     end
-  end
 
+    it 'show the number of request when present in single mode' do
+      stats = {"started_at"=>"2019-07-14T10:49:24Z", "backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "pid"=>21725, "state_file_path"=>"../testpuma/tmp/puma.state", "pcpu"=>10, "mem"=>64, "requests_count"=> 150}
+      
+      ClimateControl.modify NO_COLOR: '1' do
+        expect(format_stats(Stats.new(stats))).to eq(
+%Q{21725 (../testpuma/tmp/puma.state) Uptime:  0m 0s | Load: 0[░░░░]4 | Req: 150
+ └ 21725 CPU:    10% Mem:   64 MB Uptime:  0m 0s | Load: 0[░░░░]4 | Req: 150})
+      end
+    end
+  end
 end
