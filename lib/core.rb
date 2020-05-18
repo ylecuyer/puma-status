@@ -9,7 +9,7 @@ def get_stats(state_file_path)
   puma_state = YAML.load_file(state_file_path)
 
   uri = URI.parse(puma_state["control_url"])
-  
+
   address = if uri.scheme =~ /unix/i
               [uri.scheme, '://', uri.host, uri.path].join
             else
