@@ -50,24 +50,48 @@ describe 'Puma Status' do
       end
     end
 
-    it 'handles ENOENT errors' do
-      allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ENOENT)
+    context 'errors related to state files' do
+      it 'handles ENOENT errors' do
+        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ENOENT, './tmp/puma.state')
 
-      expect {
-        run
-      }.to output(%Q{
+        expect {
+          run
+        }.to output(%Q{
 ./tmp/puma.state doesn't exists
 }).to_stdout
-    end
+      end
 
-    it 'handles EISDIR errors' do
-      allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::EISDIR)
+      it 'handles EISDIR errors' do
+        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::EISDIR, 'fd:9 /home/ylecuyer/Projects/test-puma/tmp/puma.state')
 
-      expect {
-        run
-      }.to output(%Q{
+        expect {
+          run
+        }.to output(%Q{
 ./tmp/puma.state isn't a state file
 }).to_stdout
+      end
+    end
+
+    context 'errors not related to state files' do
+      it 'handles ENOENT errors' do
+        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ENOENT, "connect(2) for tmp/puma.sock")
+
+        expect {
+          run
+        }.to output(%Q{
+./tmp/puma.state an unhandled error occured: #<Errno::ENOENT: No such file or directory - connect(2) for tmp/puma.sock>
+}).to_stdout
+      end
+
+      it 'handles EISDIR errors' do
+        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::EISDIR, "~/Projects/test-puma/tmp")
+
+        expect {
+          run
+        }.to output(%Q{
+./tmp/puma.state an unhandled error occured: #<Errno::EISDIR: Is a directory - ~/Projects/test-puma/tmp>
+}).to_stdout
+      end
     end
 
     it 'handles all errors' do

@@ -17,11 +17,19 @@ def run
     begin
       debug "State file: #{state_file_path}"
       format_stats(get_stats(state_file_path))
-    rescue Errno::ENOENT
-      errors << "#{warn(state_file_path)} doesn't exists"
+    rescue Errno::ENOENT => e
+      if e.message =~ /#{state_file_path}/
+        errors << "#{warn(state_file_path)} doesn't exists"
+      else
+        errors << "#{error(state_file_path)} an unhandled error occured: #{e.inspect}"
+      end
       nil
-    rescue Errno::EISDIR
-      errors << "#{warn(state_file_path)} isn't a state file"
+    rescue Errno::EISDIR => e
+      if e.message =~ /#{state_file_path}/
+        errors << "#{warn(state_file_path)} isn't a state file"
+      else
+        errors << "#{error(state_file_path)} an unhandled error occured: #{e.inspect}"
+      end
       nil
     rescue => e
       errors << "#{error(state_file_path)} an unhandled error occured: #{e.inspect}"
