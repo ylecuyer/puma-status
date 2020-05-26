@@ -72,24 +72,36 @@ describe 'Puma Status' do
       end
     end
 
-    context 'errors not related to state files' do
+    context 'relative unix socket' do
       it 'handles ENOENT errors' do
         allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ENOENT, "connect(2) for tmp/puma.sock")
 
         expect {
           run
         }.to output(%Q{
-./tmp/puma.state an unhandled error occured: #<Errno::ENOENT: No such file or directory - connect(2) for tmp/puma.sock>
+Relative Unix socket: the Unix socket of the control app has a relative path. Please, ensure you are running from the same folder has puma.
 }).to_stdout
       end
+    end
 
-      it 'handles EISDIR errors' do
-        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::EISDIR, "~/Projects/test-puma/tmp")
+    context 'errors not related to state files' do
+      it 'handles ENOENT errors' do
+        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::ENOENT, "DUMMY ERROR")
 
         expect {
           run
         }.to output(%Q{
-./tmp/puma.state an unhandled error occured: #<Errno::EISDIR: Is a directory - ~/Projects/test-puma/tmp>
+./tmp/puma.state an unhandled error occured: #<Errno::ENOENT: No such file or directory - DUMMY ERROR>
+}).to_stdout
+      end
+
+      it 'handles EISDIR errors' do
+        allow_any_instance_of(Object).to receive(:get_stats).and_raise(Errno::EISDIR, "DUMMY ERROR")
+
+        expect {
+          run
+        }.to output(%Q{
+./tmp/puma.state an unhandled error occured: #<Errno::EISDIR: Is a directory - DUMMY ERROR>
 }).to_stdout
       end
     end
