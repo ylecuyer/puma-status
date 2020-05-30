@@ -19,7 +19,7 @@ $ puma-status path/to/puma.state
 For continuous monitoring:
 
 ```
-$ watch --interval 0.1 --color puma-status tmp/puma.state
+$ watch --interval 0.1 --color puma-status path/to/puma.state
 ```
 
 ## Output examples
