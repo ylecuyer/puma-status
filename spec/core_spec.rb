@@ -169,5 +169,15 @@ describe 'Core' do
  └ 21725 CPU:    10% Mem:   64 MB Uptime:  5m23s | Load: 0[░░░░]4 | Req: 150})
       end
     end
+
+    it 'displays --m--s for uptime for older versions of puma with no time instrumentation' do
+      stats = {"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4, "pid"=>21725, "state_file_path"=>"../testpuma/tmp/puma.state", "pcpu"=>10, "mem"=>64}
+
+      ClimateControl.modify NO_COLOR: '1' do
+        expect(format_stats(Stats.new(stats))).to eq(
+%Q{21725 (../testpuma/tmp/puma.state) Uptime: --m--s | Load: 0[░░░░]4
+ └ 21725 CPU:    10% Mem:   64 MB Uptime: --m--s | Load: 0[░░░░]4})
+      end
+    end
   end
 end
