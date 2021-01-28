@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'puma-status'
-  s.version = "1.1"
+  s.version = "1.2"
   s.authors = ["Yoann Lecuyer"]
   s.date = '2019-07-14'
   s.summary = 'Command-line tool for puma to display information about running request/process'
