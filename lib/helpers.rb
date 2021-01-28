@@ -44,8 +44,10 @@ def seconds_to_human(seconds)
   #=> 23h59m
   #=>  1d 0h
   #=>    24d
-  
-  if seconds < 60*60
+
+  if seconds <= 0
+    "--m--s"
+  elsif seconds < 60*60
     "#{(seconds/60).to_s.rjust(2, ' ')}m#{(seconds%60).to_s.rjust(2, ' ')}s"
   elsif seconds >= 60*60*1 && seconds < 60*60*24
     "#{(seconds/(60*60*1)).to_s.rjust(2, ' ')}h#{((seconds%(60*60*1))/60).to_s.rjust(2, ' ')}m"
