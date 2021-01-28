@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 require './lib/core'
+require './lib/helpers'
 
 describe 'Core' do
 
@@ -19,6 +20,76 @@ describe 'Core' do
         12370 => { mem: 64, pcpu: 0.0 },
         12372 => { mem: 64, pcpu: 0.0 }
       })
+    end
+
+    context 'with high memory' do
+      context 'with , separator locale' do
+        it 'for MB' do
+          allow(self).to receive(:`) {
+            %Q{12362 ylecuyer  20   0 1144000  988,6m  8916 S   0,0  1,8   0:05.18 bundle
+           12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
+           12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
+           12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
+          }
+
+          expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
+            12362 => { mem: 988, pcpu: 0.0 },
+            12366 => { mem: 64, pcpu: 0.0 },
+            12370 => { mem: 64, pcpu: 0.0 },
+            12372 => { mem: 64, pcpu: 0.0 }
+          })
+        end
+
+        it 'for GB' do
+          allow(self).to receive(:`) {
+            %Q{12362 ylecuyer  20   0 1144000  1,646g   8916 S   0,0  1,8   0:05.18 bundle
+           12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
+           12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
+           12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
+          }
+
+          expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
+            12362 => { mem: 1685, pcpu: 0.0 },
+            12366 => { mem: 64, pcpu: 0.0 },
+            12370 => { mem: 64, pcpu: 0.0 },
+            12372 => { mem: 64, pcpu: 0.0 }
+          })
+        end
+      end
+
+      context 'with . separator locale' do
+        it 'for MB' do
+          allow(self).to receive(:`) {
+            %Q{12362 ylecuyer  20   0 1144000  988.6m  8916 S   0,0  1,8   0:05.18 bundle
+           12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
+           12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
+           12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
+          }
+
+          expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
+            12362 => { mem: 988, pcpu: 0.0 },
+            12366 => { mem: 64, pcpu: 0.0 },
+            12370 => { mem: 64, pcpu: 0.0 },
+            12372 => { mem: 64, pcpu: 0.0 }
+          })
+        end
+
+        it 'for GB' do
+          allow(self).to receive(:`) {
+            %Q{12362 ylecuyer  20   0 1144000  1.646g   8916 S   0,0  1,8   0:05.18 bundle
+           12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
+           12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
+           12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
+          }
+
+          expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
+            12362 => { mem: 1685, pcpu: 0.0 },
+            12366 => { mem: 64, pcpu: 0.0 },
+            12370 => { mem: 64, pcpu: 0.0 },
+            12372 => { mem: 64, pcpu: 0.0 }
+          })
+        end
+      end
     end
   end
 
