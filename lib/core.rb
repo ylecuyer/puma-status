@@ -19,7 +19,7 @@ def get_stats(state_file_path)
   client = NetX::HTTPUnix.new(address, uri.port)
 
   if uri.scheme =~ /ssl/i
-    client.use_ssl = true 
+    client.use_ssl = true
     client.verify_mode = OpenSSL::SSL::VERIFY_NONE if ENV['SSL_NO_VERIFY'] == '1'
   end
 
@@ -32,10 +32,27 @@ def get_stats(state_file_path)
   hydrate_stats(stats, puma_state, state_file_path)
 end
 
+def get_memory_from_top(raw_memory)
+  raw_memory.tr!(',', '.') # because of LC_NUMERIC separator can be ,
+
+  case raw_memory[-1].downcase
+  when 'g'
+    (raw_memory[0...-1].to_f*1024).to_i
+  when 'm'
+    raw_memory[0...-1].to_i
+  else
+    raw_memory.to_i/1024
+  end
+end
+
+PID_COLUMN = 0
+MEM_COLUMN = 5
+CPU_COLUMN = 8
+
 def get_top_stats(pids)
   pids.each_slice(19).inject({}) do |res, pids19|
     top_result = `top -b -n 1 -p #{pids19.join(',')} | tail -n #{pids19.length}`
-    top_result.split("\n").map { |row| r = row.split(' '); [r[0].to_i, r[5].to_i/1024, r[8].to_f] }
+    top_result.split("\n").map { |row| r = row.split(' '); [r[PID_COLUMN].to_i, get_memory_from_top(r[MEM_COLUMN]), r[CPU_COLUMN].to_f] }
       .inject(res) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
     res
   end
