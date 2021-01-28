@@ -6,8 +6,8 @@ describe 'Helpers' do
 
   context 'seconds_to_human' do
     it 'works with 0 seconds' do
-      expect(seconds_to_human(0)).to eq(' 0m 0s')
-    end  
+      expect(seconds_to_human(0)).to eq('--m--s')
+    end
 
     it 'works with 1254 seconds' do
       expect(seconds_to_human(1254)).to eq('20m54s')
@@ -58,5 +58,5 @@ describe 'Helpers' do
     end
   end
 
-  
+
 end

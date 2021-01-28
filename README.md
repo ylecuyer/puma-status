@@ -43,4 +43,4 @@ Single mode:
 
 ## Known issues
 
-Uptime will shows 0s for older versions of puma: https://github.com/puma/puma/pull/1844
+Uptime will shows `--m --s` for older versions of puma (< 4.1.0): https://github.com/puma/puma/pull/1844
