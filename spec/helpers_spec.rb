@@ -28,15 +28,19 @@ describe 'Helpers' do
 
   context 'asciiThreadLoad' do
     it 'works when empty' do
-      expect(asciiThreadLoad(0, 0)).to eq('0[]0')
+      expect(asciiThreadLoad(0, 0, 0)).to eq('0[]0')
     end
 
     it 'works with data' do
-      expect(asciiThreadLoad(4, 8)).to eq('4[████░░░░]8')
+      expect(asciiThreadLoad(4, 8, 8)).to eq('4[████░░░░]8')
+    end
+
+    it 'show spawned threads' do
+      expect(asciiThreadLoad(4, 6, 8)).to eq('4[████░░  ]8')
     end
 
     it 'works when full' do
-      expect(asciiThreadLoad(9, 9)).to eq('9[█████████]9')
+      expect(asciiThreadLoad(9, 9, 9)).to eq('9[█████████]9')
     end
   end
 

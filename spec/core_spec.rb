@@ -137,11 +137,11 @@ describe 'Core' do
       it 'displays the right amount of max threads' do
         ClimateControl.modify NO_COLOR: '1' do
           expect(format_stats(Stats.new(stats))).to eq(
-%Q{12328 (../testpuma/tmp/puma.state) Uptime:  5m23s | Phase: 0 | Load: 0[░░░░░░░░░░░░░░░░]16
- └ 12362 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░░░░]4
- └ 12366 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░░░░]4
- └ 12370 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░░░░]4
- └ 12372 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░░░░]4})
+%Q{12328 (../testpuma/tmp/puma.state) Uptime:  5m23s | Phase: 0 | Load: 0[░░░░            ]16
+ └ 12362 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░   ]4
+ └ 12366 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░   ]4
+ └ 12370 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░   ]4
+ └ 12372 CPU:   0.0% Mem:   64 MB Uptime:  5m23s | Load: 0[░   ]4})
           end
         end
     end
