@@ -40,11 +40,11 @@ class Stats
     def running
       @wstats.dig('last_status', 'running') || @wstats['running'] || 0
     end
-    alias :total_threads :running
 
     def max_threads
       @wstats.dig('last_status', 'max_threads') || @wstats['max_threads'] || 0
     end
+    alias :total_threads :max_threads
 
     def pool_capacity
       @wstats.dig('last_status', 'pool_capacity') || @wstats['pool_capacity'] || 0
