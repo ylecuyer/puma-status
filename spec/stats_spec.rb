@@ -48,12 +48,12 @@ describe Stats do
          expect(stats.workers.first.total_threads).to eq(4)
        end
 
-       it 'gives total threads last worker' do
-         expect(stats.workers.last.total_threads).to eq(4)
-       end
-
        it 'gives running threads last worker' do
          expect(stats.workers.last.running_threads).to eq(1)
+       end
+
+       it 'gives total threads last worker' do
+         expect(stats.workers.last.total_threads).to eq(4)
        end
 
        it 'can mark worker as killed' do
