@@ -82,7 +82,7 @@ def format_stats(stats)
   if stats.booting?
     master_line += " #{warn("booting")}"
   else
-    master_line += " | Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.max_threads))}"
+    master_line += " | Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.spawned_threads, stats.max_threads))}"
     master_line += " | Req: #{stats.requests_count}" if stats.requests_count
   end
 
@@ -94,7 +94,7 @@ def format_stats(stats)
     elsif wstats.killed?
       worker_line += " #{error("killed")}"
     else
-      worker_line += " | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.max_threads))}"
+      worker_line += " | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.spawned_threads, wstats.max_threads))}"
       worker_line += " | Phase: #{error(wstats.phase)}" if wstats.phase != stats.phase
       worker_line += " | Req: #{wstats.requests_count}" if wstats.requests_count
       worker_line += " Queue: #{error(wstats.backlog.to_s)}" if wstats.backlog > 0

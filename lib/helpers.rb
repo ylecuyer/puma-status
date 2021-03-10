@@ -29,11 +29,16 @@ def color(critical, warn, value, str = nil)
   colorize(str, color_level)
 end
 
-def asciiThreadLoad(idx, total)
+def asciiThreadLoad(running, spawned, total)
   full = "█"
-  empty= "░"
+  half= "░"
+  empty = " "
 
-  "#{idx}[#{full*idx}#{empty*(total-idx)}]#{total}"
+  full_count = running
+  half_count = [spawned - running, 0].max
+  empty_count = total - half_count - full_count
+
+  "#{running}[#{full*full_count}#{half*half_count}#{empty*empty_count}]#{total}"
 end
 
 def seconds_to_human(seconds)
