@@ -40,6 +40,8 @@ class Stats
     def running
       @wstats.dig('last_status', 'running') || @wstats['running'] || 0
     end
+    alias :total_threads :running
+    alias :spawned_threads :running
 
     def max_threads
       @wstats.dig('last_status', 'max_threads') || @wstats['max_threads'] || 0
@@ -121,6 +123,10 @@ class Stats
 
   def running_threads
     workers.reduce(0) { |total, wstats| total + wstats.running_threads }
+  end
+
+  def spawned_threads
+    workers.reduce(0) { |total, wstats| total + wstats.spawned_threads }
   end
 
   def max_threads
