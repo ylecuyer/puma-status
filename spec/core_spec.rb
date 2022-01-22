@@ -6,6 +6,11 @@ require './lib/helpers'
 describe 'Core' do
 
   context 'get_top_stats' do
+    it 'prevents shell injections' do
+      get_top_stats(['| echo "shell injection" > /tmp/out.log'])
+      expect(File).not_to exist('/tmp/out.log')
+    end
+
     it 'returns mem and cpu' do
       allow(self).to receive(:`) {
         %Q{12362 ylecuyer  20   0 1144000  65764   8916 S   0,0  1,8   0:05.18 bundle
