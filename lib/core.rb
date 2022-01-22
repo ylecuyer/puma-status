@@ -51,8 +51,8 @@ CPU_COLUMN = 8
 
 def get_top_stats(pids)
   pids.each_slice(19).inject({}) do |res, pids19|
-    top_result = `top -b -n 1 -p #{pids19.join(',')} | tail -n #{pids19.length}`
-    top_result.split("\n").map { |row| r = row.split(' '); [r[PID_COLUMN].to_i, get_memory_from_top(r[MEM_COLUMN]), r[CPU_COLUMN].to_f] }
+    top_result = `top -b -n 1 -p #{pids19.join(',')}`
+    top_result.split("\n").last(pids19.length).map { |row| r = row.split(' '); [r[PID_COLUMN].to_i, get_memory_from_top(r[MEM_COLUMN]), r[CPU_COLUMN].to_f] }
       .inject(res) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
     res
   end
