@@ -34,8 +34,6 @@ def get_stats(state_file_path)
 end
 
 def get_memory_from_top(raw_memory)
-  raw_memory.tr!(',', '.') # because of LC_NUMERIC separator can be ,
-
   case raw_memory[-1].downcase
   when 'g'
     (raw_memory[0...-1].to_f*1024).to_i
@@ -53,7 +51,7 @@ OPEN3_STDOUT = 1
 
 def get_top_stats(pids)
   pids.each_slice(19).inject({}) do |res, pids19|
-    top_result = Open3.popen3("top -b -n 1 -p #{pids19.join(',')}")[OPEN3_STDOUT].read
+    top_result = Open3.popen3({ 'LC_ALL' => 'C' }, "top -b -n 1 -p #{pids19.join(',')}")[OPEN3_STDOUT].read
     top_result.split("\n").last(pids19.length).map { |row| r = row.split(' '); [r[PID_COLUMN].to_i, get_memory_from_top(r[MEM_COLUMN]), r[CPU_COLUMN].to_f] }
       .inject(res) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
     res
