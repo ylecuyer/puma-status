@@ -3,6 +3,7 @@ require 'json'
 require 'net_x/http_unix'
 require 'openssl'
 require 'time'
+require 'open3'
 require_relative 'stats'
 
 def get_stats(state_file_path)
@@ -48,10 +49,11 @@ end
 PID_COLUMN = 0
 MEM_COLUMN = 5
 CPU_COLUMN = 8
+OPEN3_STDOUT = 1
 
 def get_top_stats(pids)
   pids.each_slice(19).inject({}) do |res, pids19|
-    top_result = `top -b -n 1 -p #{pids19.join(',')}`
+    top_result = Open3.popen3("top -b -n 1 -p #{pids19.join(',')}")[OPEN3_STDOUT].read
     top_result.split("\n").last(pids19.length).map { |row| r = row.split(' '); [r[PID_COLUMN].to_i, get_memory_from_top(r[MEM_COLUMN]), r[CPU_COLUMN].to_f] }
       .inject(res) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
     res
