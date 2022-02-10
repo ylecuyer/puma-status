@@ -5,6 +5,12 @@ require './lib/helpers'
 
 describe 'Core' do
 
+  def stub_top(output)
+    allow(Open3).to receive(:popen3) do
+      [nil, StringIO.new(output), nil, 0]
+    end
+  end
+
   context 'get_top_stats' do
     it 'prevents shell injections' do
       get_top_stats(['| echo "shell injection" > /tmp/out.log'])
@@ -12,8 +18,7 @@ describe 'Core' do
     end
 
     it 'skips top header' do
-      allow(self).to receive(:`) {
-        %Q{top - 16:24:47 up  2:39,  1 user,  load average: 3,30, 3,04, 3,07
+      stub_top %Q{top - 16:24:47 up  2:39,  1 user,  load average: 3,30, 3,04, 3,07
            Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
            %Cpu(s): 21,1 us,  2,6 sy,  1,8 ni, 72,2 id,  0,2 wa,  0,0 hi,  2,1 si,  0,0 st
            KiB Mem : 16259816 total,  2183812 free,  4538464 used,  9537540 buff/cache
@@ -23,7 +28,6 @@ describe 'Core' do
            12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
            12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
            12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-      }
 
       expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
         12362 => { mem: 64, pcpu: 0.0 },
@@ -34,12 +38,10 @@ describe 'Core' do
     end
 
     it 'returns mem and cpu' do
-      allow(self).to receive(:`) {
-        %Q{12362 ylecuyer  20   0 1144000  65764   8916 S   0,0  1,8   0:05.18 bundle
+      stub_top %Q{12362 ylecuyer  20   0 1144000  65764   8916 S   0,0  1,8   0:05.18 bundle
            12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
            12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
            12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-      }
 
       expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
         12362 => { mem: 64, pcpu: 0.0 },
@@ -52,12 +54,10 @@ describe 'Core' do
     context 'with high memory' do
       context 'with , separator locale' do
         it 'for MB' do
-          allow(self).to receive(:`) {
-            %Q{12362 ylecuyer  20   0 1144000  988,6m  8916 S   0,0  1,8   0:05.18 bundle
+          stub_top %Q{12362 ylecuyer  20   0 1144000  988,6m  8916 S   0,0  1,8   0:05.18 bundle
            12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
            12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
            12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-          }
 
           expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
             12362 => { mem: 988, pcpu: 0.0 },
@@ -68,12 +68,10 @@ describe 'Core' do
         end
 
         it 'for GB' do
-          allow(self).to receive(:`) {
-            %Q{12362 ylecuyer  20   0 1144000  1,646g   8916 S   0,0  1,8   0:05.18 bundle
+          stub_top %Q{12362 ylecuyer  20   0 1144000  1,646g   8916 S   0,0  1,8   0:05.18 bundle
            12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
            12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
            12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-          }
 
           expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
             12362 => { mem: 1685, pcpu: 0.0 },
@@ -86,12 +84,10 @@ describe 'Core' do
 
       context 'with . separator locale' do
         it 'for MB' do
-          allow(self).to receive(:`) {
-            %Q{12362 ylecuyer  20   0 1144000  988.6m  8916 S   0,0  1,8   0:05.18 bundle
+          stub_top %Q{12362 ylecuyer  20   0 1144000  988.6m  8916 S   0,0  1,8   0:05.18 bundle
            12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
            12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
            12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-          }
 
           expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
             12362 => { mem: 988, pcpu: 0.0 },
@@ -102,12 +98,10 @@ describe 'Core' do
         end
 
         it 'for GB' do
-          allow(self).to receive(:`) {
-            %Q{12362 ylecuyer  20   0 1144000  1.646g   8916 S   0,0  1,8   0:05.18 bundle
+          stub_top %Q{12362 ylecuyer  20   0 1144000  1.646g   8916 S   0,0  1,8   0:05.18 bundle
            12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
            12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
            12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-          }
 
           expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
             12362 => { mem: 1685, pcpu: 0.0 },
