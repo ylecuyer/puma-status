@@ -12,6 +12,11 @@ describe 'Core' do
   end
 
   context 'get_top_stats' do
+    it 'prevents shell injections' do
+      get_top_stats(['| echo "shell injection" > /tmp/out.log'])
+      expect(File).not_to exist('/tmp/out.log')
+    end
+
     it 'skips top header' do
       stub_top %Q{top - 16:24:47 up  2:39,  1 user,  load average: 3,30, 3,04, 3,07
            Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
