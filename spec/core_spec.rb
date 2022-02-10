@@ -6,6 +6,11 @@ require './lib/helpers'
 describe 'Core' do
 
   context 'get_top_stats' do
+    it 'prevents shell injections' do
+      get_top_stats(['| echo "shell injection" > /tmp/out.log'])
+      expect(File).not_to exist('/tmp/out.log')
+    end
+
     it 'skips top header' do
       allow(self).to receive(:`) {
         %Q{top - 16:24:47 up  2:39,  1 user,  load average: 3,30, 3,04, 3,07
