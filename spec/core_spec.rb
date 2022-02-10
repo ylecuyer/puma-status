@@ -12,26 +12,6 @@ describe 'Core' do
   end
 
   context 'get_top_stats' do
-    it 'skips top header' do
-      stub_top %Q{top - 16:24:47 up  2:39,  1 user,  load average: 3,30, 3,04, 3,07
-           Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
-           %Cpu(s): 21,1 us,  2,6 sy,  1,8 ni, 72,2 id,  0,2 wa,  0,0 hi,  2,1 si,  0,0 st
-           KiB Mem : 16259816 total,  2183812 free,  4538464 used,  9537540 buff/cache
-           KiB Swap:  2097148 total,  2097148 free,        0 used. 10639744 avail Mem
-
-           12362 ylecuyer  20   0 1144000  65764   8916 S   0,0  1,8   0:05.18 bundle
-           12366 ylecuyer  20   0 1145032  65732   8936 S   0,0  1,8   0:05.17 bundle
-           12370 ylecuyer  20   0 1143996  65708   8936 S   0,0  1,8   0:05.17 bundle
-           12372 ylecuyer  20   0 1143992  65780   8936 S   0,0  1,8   0:05.16 bundle}
-
-      expect(get_top_stats([12362, 12366, 12370, 12372])).to eq({
-        12362 => { mem: 64, pcpu: 0.0 },
-        12366 => { mem: 64, pcpu: 0.0 },
-        12370 => { mem: 64, pcpu: 0.0 },
-        12372 => { mem: 64, pcpu: 0.0 }
-      })
-    end
-
     it 'prevents shell injections' do
       get_top_stats(['| echo "shell injection" > /tmp/out.log'])
       expect(File).not_to exist('/tmp/out.log')
