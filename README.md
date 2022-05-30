@@ -27,18 +27,16 @@ $ watch --interval 0.1 --color puma-status path/to/puma.state
 Clustered mode:
 
 ```
-9666 (application/tmp/puma.state) Uptime:  0m43s | Load: 7[███████░░░░░░░░░]16
- └  9706 CPU:   0.0% Mem:   71 MB Uptime:  0m43s | Load: 3[███░]4
- └  9708 CPU:   0.0% Mem:   71 MB Uptime:  0m43s | Load: 4[████]4
- └  9725 CPU:   0.0% Mem:   58 MB Uptime:  0m43s | Load: 0[░░░░]4
- └  9732 CPU:   0.0% Mem:   58 MB Uptime:  0m43s | Load: 0[░░░░]4
+16723 (/tmp/puma.state) Version: 5.6.4/ruby2.5.3p105 | Uptime:  1m50s | Phase: 0 | Load: 2[██░░      ]10 | Req: 936
+ └ 16827 CPU:  93.3% Mem:  140 MB Uptime:  1m50s | Load: 1[█░   ]5 | Req: 469
+ └ 16833 CPU: 106.7% Mem:  145 MB Uptime:  1m50s | Load: 1[█░   ]5 | Req: 467
 ```
 
 Single mode:
 
 ```
-9949 (application/tmp/puma.state) Uptime:  0m 5s | Load: 2[██░░]4
- └  9949 CPU:   0.0% Mem:   75 MB Uptime:  0m 5s | Load: 2[██░░]4
+18847 (/tmp/puma.state) Version: 5.6.4/ruby2.5.3p105 | Uptime:  0m 3s | Load: 1[█░░  ]5 | Req: 672
+ └ 18847 CPU: 120.0% Mem:  143 MB Uptime:  0m 3s | Load: 1[█░░  ]5 | Req: 672
 ```
 
 ## Known issues
