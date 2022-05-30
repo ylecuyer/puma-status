@@ -154,4 +154,10 @@ class Stats
   def load
     running_threads/total_threads.to_f*100
   end
+
+  def version
+    return nil unless @stats.key?('versions')
+
+    "#{@stats['versions']['puma']}/#{@stats['versions']['ruby']['engine']}#{@stats['versions']['ruby']['version']}p#{@stats['versions']['ruby']['patchlevel']}"
+  end
 end
