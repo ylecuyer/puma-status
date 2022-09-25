@@ -76,7 +76,9 @@ def hydrate_stats(stats, puma_state, state_file_path)
 end
 
 def format_stats(stats)
-  master_line = "#{stats.pid} (#{stats.state_file_path}) Uptime: #{seconds_to_human(stats.uptime)}"
+  master_line = "#{stats.pid} (#{stats.state_file_path})"
+  master_line += " Version: #{stats.version} |" if stats.version
+  master_line += " Uptime: #{seconds_to_human(stats.uptime)}"
   master_line += " | Phase: #{stats.phase}" if stats.phase
 
   if stats.booting?

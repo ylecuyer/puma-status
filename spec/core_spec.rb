@@ -106,6 +106,16 @@ describe 'Core' do
       Timecop.return
     end
 
+    it 'shows puma and ruby versions if available' do
+      stats = {"started_at"=>"2022-05-30T21:49:20Z", "backlog"=>0, "running"=>2, "pool_capacity"=>5, "max_threads"=>5, "requests_count"=>2, "versions"=>{"puma"=>"5.6.4", "ruby"=>{"engine"=>"ruby", "version"=>"2.5.3", "patchlevel"=>105}}, "pid"=>21725, "state_file_path"=>"../testpuma/tmp/puma.state", "pcpu"=>10, "mem"=>64}
+
+      ClimateControl.modify NO_COLOR: '1' do
+        expect(format_stats(Stats.new(stats))).to eq(
+%Q{21725 (../testpuma/tmp/puma.state) Version: 5.6.4/ruby2.5.3p105 | Uptime: --m--s | Load: 0[░░   ]5 | Req: 2
+ └ 21725 CPU:    10% Mem:   64 MB Uptime: --m--s | Load: 0[░░   ]5 | Req: 2})
+      end
+    end
+
     it 'works in clusted mode' do
       stats = {"started_at"=>"2019-07-14T10:49:24Z", "workers"=>4, "phase"=>0, "booted_workers"=>4, "old_workers"=>0, "worker_status"=>[{"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12362, "index"=>0, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4}, "mem"=>64, "pcpu"=>0.0}, {"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12366, "index"=>1, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4}, "mem"=>64, "pcpu"=>0.0}, {"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12370, "index"=>2, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4}, "mem"=>64, "pcpu"=>0.0}, {"started_at"=>"2019-07-14T10:49:24Z", "pid"=>12372, "index"=>3, "phase"=>0, "booted"=>true, "last_checkin"=>"2019-07-14T13:09:00Z", "last_status"=>{"backlog"=>0, "running"=>4, "pool_capacity"=>4, "max_threads"=>4}, "mem"=>64, "pcpu"=>0.0}], "pid"=>12328, "state_file_path"=>"../testpuma/tmp/puma.state"}
 
