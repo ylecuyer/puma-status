@@ -4,7 +4,7 @@ def debug(str)
   puts str if ENV.key?('DEBUG')
 end
 
-def warn(str)
+def warn(str, **_)
   colorize(str, :yellow)
 end
 
