@@ -82,7 +82,7 @@ def format_stats(stats)
   master_line += " | Phase: #{stats.phase}" if stats.phase
 
   if stats.booting?
-    master_line += " #{warn("booting")}"
+    master_line += " #{yellow("booting")}"
   else
     master_line += " | Load: #{color(75, 50, stats.load, asciiThreadLoad(stats.running_threads, stats.spawned_threads, stats.max_threads))}"
     master_line += " | Req: #{stats.requests_count}" if stats.requests_count
@@ -92,15 +92,15 @@ def format_stats(stats)
     worker_line = " └ #{wstats.pid.to_s.rjust(5, ' ')} CPU: #{color(75, 50, wstats.pcpu, wstats.pcpu.to_s.rjust(5, ' '))}% Mem: #{color(1000, 750, wstats.mem, wstats.mem.to_s.rjust(4, ' '))} MB Uptime: #{seconds_to_human(wstats.uptime)}"
 
     if wstats.booting?
-      worker_line += " #{warn("booting")}"
+      worker_line += " #{yellow("booting")}"
     elsif wstats.killed?
-      worker_line += " #{error("killed")}"
+      worker_line += " #{red("killed")}"
     else
       worker_line += " | Load: #{color(75, 50, wstats.load, asciiThreadLoad(wstats.running_threads, wstats.spawned_threads, wstats.max_threads))}"
-      worker_line += " | Phase: #{error(wstats.phase)}" if wstats.phase != stats.phase
+      worker_line += " | Phase: #{red(wstats.phase)}" if wstats.phase != stats.phase
       worker_line += " | Req: #{wstats.requests_count}" if wstats.requests_count
-      worker_line += " Queue: #{error(wstats.backlog.to_s)}" if wstats.backlog > 0
-      worker_line += " Last checkin: #{error(wstats.last_checkin)}" if wstats.last_checkin >= 10
+      worker_line += " Queue: #{red(wstats.backlog.to_s)}" if wstats.backlog > 0
+      worker_line += " Last checkin: #{red(wstats.last_checkin)}" if wstats.last_checkin >= 10
     end
 
     worker_line
