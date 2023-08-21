@@ -57,7 +57,7 @@ describe 'Puma Status' do
         expect {
           run
         }.to output(%Q{
-./tmp/puma.state doesn't exists
+./tmp/puma.state doesn't exist
 }).to_stdout
       end
 
@@ -79,7 +79,7 @@ describe 'Puma Status' do
         expect {
           run
         }.to output(%Q{
-Relative Unix socket: the Unix socket of the control app has a relative path. Please, ensure you are running from the same folder has puma.
+Relative Unix socket: the Unix socket of the control app has a relative path. Please, ensure you are running from the same folder as puma.
 }).to_stdout
       end
     end
