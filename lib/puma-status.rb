@@ -19,9 +19,9 @@ def run
       format_stats(get_stats(state_file_path))
     rescue Errno::ENOENT => e
       if e.message =~ /#{state_file_path}/
-        errors << "#{yellow(state_file_path)} doesn't exists"
+        errors << "#{yellow(state_file_path)} doesn't exist"
       elsif e.message =~ /connect\(2\) for [^\/]/
-        errors << "#{yellow("Relative Unix socket")}: the Unix socket of the control app has a relative path. Please, ensure you are running from the same folder has puma."
+        errors << "#{yellow("Relative Unix socket")}: the Unix socket of the control app has a relative path. Please, ensure you are running from the same folder as puma."
       else
         errors << "#{red(state_file_path)} an unhandled error occured: #{e.inspect}"
       end
