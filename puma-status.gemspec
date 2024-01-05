@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.executables = ['puma-status']
 
-  s.add_runtime_dependency "colorize", '~> 0.8'
+  s.add_runtime_dependency "colorize", '~> 1.1'
   s.add_runtime_dependency "net_http_unix", '~> 0.2'
   s.add_runtime_dependency "parallel", '~> 1'
 
