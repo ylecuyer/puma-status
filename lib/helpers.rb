@@ -1,20 +1,20 @@
-require 'colorize'
+require 'rainbow'
 
 def debug(str)
   puts str if ENV.key?('DEBUG')
 end
 
 def yellow(str)
-  colorize(str, :yellow)
+  rainbow(str, :yellow)
 end
 
 def red(str)
-  colorize(str, :red)
+  rainbow(str, :red)
 end
 
-def colorize(str, color_name)
+def rainbow(str, color_name)
   return str if ENV.key?('NO_COLOR')
-  str.to_s.colorize(color_name)
+  Rainbow(str.to_s).send(color_name)
 end
 
 def color(critical, warn, value, str = nil)
@@ -26,7 +26,7 @@ def color(critical, warn, value, str = nil)
           else
             :green
           end
-  colorize(str, color_level)
+  rainbow(str, color_level)
 end
 
 def asciiThreadLoad(running, spawned, total)
