@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    puma-status (1.6)
+    puma-status (1.7)
       net_http_unix (~> 0.2)
       parallel (~> 1)
 
