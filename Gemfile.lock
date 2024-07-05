@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     puma-status (1.6)
-      colorize (~> 1.1)
       net_http_unix (~> 0.2)
       parallel (~> 1)
 
@@ -10,7 +9,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     climate_control (0.2.0)
-    colorize (1.1.0)
     diff-lcs (1.5.0)
     net_http_unix (0.2.2)
     parallel (1.24.0)
