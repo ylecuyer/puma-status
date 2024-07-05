@@ -1,5 +1,3 @@
-require 'colorize'
-
 def debug(str)
   puts str if ENV.key?('DEBUG')
 end
@@ -14,7 +12,16 @@ end
 
 def colorize(str, color_name)
   return str if ENV.key?('NO_COLOR')
-  str.to_s.colorize(color_name)
+  case color_name
+  when :red
+    "\e[0;31;49m#{str}\e[0m"
+  when :yellow
+    "\e[0;33;49m#{str}\e[0m"
+  when :green
+    "\e[0;32;49m#{str}\e[0m"
+  else
+    str
+  end
 end
 
 def color(critical, warn, value, str = nil)
