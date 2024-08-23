@@ -22,7 +22,7 @@ class Stats
     end
 
     def mem
-      @wstats['mem']
+      @wstats['mem'] || 0
     end
 
     def pcpu=(pcpu)
@@ -30,7 +30,7 @@ class Stats
     end
 
     def pcpu
-      @wstats['pcpu']
+      @wstats['pcpu'] || 0
     end
 
     def booting?
@@ -84,8 +84,13 @@ class Stats
     end
   end
 
-  def initialize(stats)
+  def initialize(stats, origin: 'local')
+    @origin = origin
     @stats = stats
+  end
+
+  def origin
+    @origin
   end
 
   def workers

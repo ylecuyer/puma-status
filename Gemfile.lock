@@ -4,6 +4,7 @@ PATH
     puma-status (1.7)
       net_http_unix (~> 0.2)
       parallel (~> 1)
+      websocket (~> 1.2)
 
 GEM
   remote: https://rubygems.org/
@@ -26,6 +27,7 @@ GEM
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
     timecop (0.9.8)
+    websocket (1.2.11)
 
 PLATFORMS
   ruby
