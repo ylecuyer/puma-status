@@ -48,10 +48,16 @@ PID_COLUMN = 0
 MEM_COLUMN = 5
 CPU_COLUMN = 8
 OPEN3_STDOUT = 1
+OPEN3_STDERR = 2
 
 def get_top_stats(pids)
   pids.each_slice(19).inject({}) do |res, pids19|
-    top_result = Open3.popen3({ 'LC_ALL' => 'C' }, "top -b -n 1 -p #{pids19.map(&:to_i).join(',')}")[OPEN3_STDOUT].read
+    top = Open3.popen3({ 'LC_ALL' => 'C' }, "top -b -n 1 -p #{pids19.map(&:to_i).join(',')}")
+    if error = top[OPEN3_STDERR].read.strip and !error.empty?
+      warn "Error when calling top: #{error}"
+      next res
+    end
+    top_result = top[OPEN3_STDOUT].read
     top_result.split("\n").last(pids19.length).map { |row| r = row.split(' '); [r[PID_COLUMN].to_i, get_memory_from_top(r[MEM_COLUMN]), r[CPU_COLUMN].to_f] }
       .inject(res) { |hash, row| hash[row[0]] = { mem: row[1], pcpu: row[2] }; hash }
     res

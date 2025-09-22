@@ -3,17 +3,21 @@ require_relative './core.rb'
 require 'parallel'
 
 def run
+  run_argv(ARGV)
+end
+
+def run_argv(argv)
   debug "puma-status"
 
-  if ARGV.count < 1
+  if argv.count < 1
     puts "Call with:"
     puts "\tpuma-status path/to/puma.state"
     exit -1
   end
 
   errors = []
-  
-  outputs = Parallel.map(ARGV, in_threads: ARGV.count) do |state_file_path|
+
+  outputs = Parallel.map(argv, in_threads: argv.count) do |state_file_path|
     begin
       debug "State file: #{state_file_path}"
       format_stats(get_stats(state_file_path))
