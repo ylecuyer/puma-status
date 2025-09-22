@@ -7,7 +7,7 @@ describe 'Core' do
 
   def stub_top(output)
     allow(Open3).to receive(:popen3) do
-      [nil, StringIO.new(output), nil, 0]
+      [nil, StringIO.new(output), StringIO.new, 0]
     end
   end
 
