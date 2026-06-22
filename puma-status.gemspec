@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.executables = ['puma-status']
 
   s.add_runtime_dependency "net_http_unix", '~> 0.2'
-  s.add_runtime_dependency "parallel", '~> 1'
+  s.add_runtime_dependency "parallel", '~> 2'
 
   s.add_development_dependency "rspec", '~> 3.8'
   s.add_development_dependency "climate_control", '~> 0.2'
